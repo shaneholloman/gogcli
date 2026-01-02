@@ -513,8 +513,6 @@ func TestReplyAllValidation(t *testing.T) {
 	// Test that --reply-all requires --reply-to-message-id
 	cmd := &GmailSendCmd{
 		ReplyAll: true,
-		Subject:  "Test",
-		Body:     "Test body",
 	}
 
 	// This would normally go through Run(), but we can test the validation logic

@@ -70,6 +70,7 @@ func TestFormat_KongParseError_UnknownFlag(t *testing.T) {
 	type TestCmd struct {
 		Max int64 `name:"max" help:"Max results"`
 	}
+
 	parser, err := kong.New(&TestCmd{})
 	if err != nil {
 		t.Fatal(err)
@@ -91,6 +92,7 @@ func TestFormat_KongParseError_WithSuggestion(t *testing.T) {
 	type TestCmd struct {
 		Limit int64 `name:"limit" help:"Limit results"`
 	}
+
 	parser, err := kong.New(&TestCmd{})
 	if err != nil {
 		t.Fatal(err)
@@ -116,6 +118,7 @@ func TestFormat_KongParseError_UnknownFlagWithAlias(t *testing.T) {
 	type TestCmd struct {
 		Max int64 `name:"max" aliases:"limit" help:"Max results"`
 	}
+
 	parser, err := kong.New(&TestCmd{})
 	if err != nil {
 		t.Fatal(err)
