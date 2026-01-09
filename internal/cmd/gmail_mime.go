@@ -22,6 +22,17 @@ type mailAttachment struct {
 	Data     []byte
 }
 
+type toPolicy int
+
+const (
+	toRequired toPolicy = iota
+	toOptional
+)
+
+type rfc822Config struct {
+	toPolicy toPolicy
+}
+
 type mailOptions struct {
 	From              string
 	To                []string
@@ -37,11 +48,16 @@ type mailOptions struct {
 	Attachments       []mailAttachment
 }
 
-func buildRFC822(opts mailOptions) ([]byte, error) {
+func buildRFC822(opts mailOptions, configs ...rfc822Config) ([]byte, error) {
+	cfg := rfc822Config{toPolicy: toRequired}
+	if len(configs) > 0 {
+		cfg = configs[0]
+	}
+
 	if strings.TrimSpace(opts.From) == "" {
 		return nil, errors.New("missing From")
 	}
-	if len(opts.To) == 0 {
+	if len(opts.To) == 0 && cfg.toPolicy == toRequired {
 		return nil, errors.New("missing To")
 	}
 	if strings.TrimSpace(opts.Subject) == "" {
@@ -60,7 +76,9 @@ func buildRFC822(opts mailOptions) ([]byte, error) {
 	}
 
 	writeHeader(&b, "From", opts.From)
-	writeHeader(&b, "To", strings.Join(opts.To, ", "))
+	if len(opts.To) > 0 {
+		writeHeader(&b, "To", strings.Join(opts.To, ", "))
+	}
 	if len(opts.Cc) > 0 {
 		writeHeader(&b, "Cc", strings.Join(opts.Cc, ", "))
 	}

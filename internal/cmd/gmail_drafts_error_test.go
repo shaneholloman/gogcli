@@ -10,8 +10,8 @@ func TestGmailDraftsCreate_ValidationErrors(t *testing.T) {
 	flags := &RootFlags{Account: "a@b.com"}
 
 	cmd := &GmailDraftsCreateCmd{}
-	if err := runKong(t, cmd, []string{}, context.Background(), flags); err == nil || !strings.Contains(err.Error(), "required: --to, --subject") {
-		t.Fatalf("expected required to/subject error, got %v", err)
+	if err := runKong(t, cmd, []string{}, context.Background(), flags); err == nil || !strings.Contains(err.Error(), "required: --subject") {
+		t.Fatalf("expected required subject error, got %v", err)
 	}
 
 	cmd = &GmailDraftsCreateCmd{}

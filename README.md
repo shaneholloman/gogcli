@@ -344,7 +344,9 @@ gog gmail thread modify <threadId> --add STARRED --remove INBOX
 gog gmail send --to a@b.com --subject "Hi" --body "Plain fallback"
 gog gmail send --to a@b.com --subject "Hi" --body "Plain fallback" --body-html "<p>Hello</p>"
 gog gmail drafts list
-gog gmail drafts create --to a@b.com --subject "Draft"
+gog gmail drafts create --subject "Draft" --body "Body"
+gog gmail drafts create --to a@b.com --subject "Draft" --body "Body"
+gog gmail drafts update <draftId> --subject "Draft" --body "Body"
 gog gmail drafts update <draftId> --to a@b.com --subject "Draft" --body "Body"
 gog gmail drafts send <draftId>
 

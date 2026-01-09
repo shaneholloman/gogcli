@@ -269,7 +269,7 @@ func (c *GmailDraftsSendCmd) Run(ctx context.Context, flags *RootFlags) error {
 }
 
 type GmailDraftsCreateCmd struct {
-	To               string   `name:"to" help:"Recipients (comma-separated, required)"`
+	To               string   `name:"to" help:"Recipients (comma-separated)"`
 	Cc               string   `name:"cc" help:"CC recipients (comma-separated)"`
 	Bcc              string   `name:"bcc" help:"BCC recipients (comma-separated)"`
 	Subject          string   `name:"subject" help:"Subject (required)"`
@@ -296,8 +296,8 @@ type draftComposeInput struct {
 }
 
 func (c draftComposeInput) validate() error {
-	if strings.TrimSpace(c.To) == "" || strings.TrimSpace(c.Subject) == "" {
-		return usage("required: --to, --subject")
+	if strings.TrimSpace(c.Subject) == "" {
+		return usage("required: --subject")
 	}
 	if strings.TrimSpace(c.Body) == "" && strings.TrimSpace(c.BodyHTML) == "" {
 		return usage("required: --body or --body-html")
@@ -350,7 +350,7 @@ func buildDraftMessage(ctx context.Context, svc *gmail.Service, account string, 
 		InReplyTo:   inReplyTo,
 		References:  references,
 		Attachments: atts,
-	})
+	}, rfc822Config{toPolicy: toOptional})
 	if err != nil {
 		return nil, "", err
 	}
@@ -429,7 +429,7 @@ func (c *GmailDraftsCreateCmd) Run(ctx context.Context, flags *RootFlags) error 
 
 type GmailDraftsUpdateCmd struct {
 	DraftID          string   `arg:"" name:"draftId" help:"Draft ID"`
-	To               string   `name:"to" help:"Recipients (comma-separated, required)"`
+	To               string   `name:"to" help:"Recipients (comma-separated)"`
 	Cc               string   `name:"cc" help:"CC recipients (comma-separated)"`
 	Bcc              string   `name:"bcc" help:"BCC recipients (comma-separated)"`
 	Subject          string   `name:"subject" help:"Subject (required)"`

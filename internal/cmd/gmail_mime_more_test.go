@@ -19,6 +19,20 @@ func TestBuildRFC822_MissingFields(t *testing.T) {
 	}
 }
 
+func TestBuildRFC822_AllowMissingTo(t *testing.T) {
+	raw, err := buildRFC822(mailOptions{
+		From:    "a@b.com",
+		Subject: "Hi",
+		Body:    "Hello",
+	}, rfc822Config{toPolicy: toOptional})
+	if err != nil {
+		t.Fatalf("buildRFC822: %v", err)
+	}
+	if strings.Contains(string(raw), "\r\nTo:") {
+		t.Fatalf("expected no To header")
+	}
+}
+
 func TestBuildRFC822_InvalidHeaders(t *testing.T) {
 	if _, err := buildRFC822(mailOptions{
 		From:    "a@b.com\r\nBcc: evil@evil.com",

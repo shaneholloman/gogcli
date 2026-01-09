@@ -206,9 +206,9 @@ func TestGmailDraftsCreate_ValidationErrors_More(t *testing.T) {
 	flags := &RootFlags{Account: "a@b.com"}
 
 	if err := (&GmailDraftsCreateCmd{}).Run(ctx, flags); err == nil {
-		t.Fatalf("expected missing to/subject error")
+		t.Fatalf("expected missing subject error")
 	}
-	if err := (&GmailDraftsCreateCmd{To: "a@b.com", Subject: "S"}).Run(ctx, flags); err == nil {
+	if err := (&GmailDraftsCreateCmd{Subject: "S"}).Run(ctx, flags); err == nil {
 		t.Fatalf("expected missing body error")
 	}
 }
