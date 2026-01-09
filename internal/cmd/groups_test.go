@@ -20,7 +20,7 @@ func TestWrapCloudIdentityError(t *testing.T) {
 	}
 
 	other := errors.New("other")
-	if wrapCloudIdentityError(other) != other {
+	if !errors.Is(wrapCloudIdentityError(other), other) {
 		t.Fatalf("expected passthrough error")
 	}
 }

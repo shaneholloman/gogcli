@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+const (
+	transparencyOpaque      = "opaque"
+	transparencyTransparent = "transparent"
+)
+
 func validateColorId(s string) (string, error) {
 	s = strings.TrimSpace(s)
 	if s == "" {
@@ -45,10 +50,10 @@ func validateTransparency(s string) (string, error) {
 	}
 	switch s {
 	case "busy":
-		return "opaque", nil
+		return transparencyOpaque, nil
 	case "free":
-		return "transparent", nil
-	case "opaque", "transparent":
+		return transparencyTransparent, nil
+	case transparencyOpaque, transparencyTransparent:
 		return s, nil
 	default:
 		return "", fmt.Errorf("invalid transparency: %q (must be opaque/busy or transparent/free)", s)

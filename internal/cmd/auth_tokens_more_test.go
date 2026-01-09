@@ -39,18 +39,20 @@ func TestAuthTokensExportImport_JSON(t *testing.T) {
 	}
 
 	outPath := filepath.Join(t.TempDir(), "token.json")
-	u, err := ui.New(ui.Options{Stdout: os.Stdout, Stderr: os.Stderr, Color: "never"})
-	if err != nil {
-		t.Fatalf("ui.New: %v", err)
+	u, uiErr := ui.New(ui.Options{Stdout: os.Stdout, Stderr: os.Stderr, Color: "never"})
+	if uiErr != nil {
+		t.Fatalf("ui.New: %v", uiErr)
 	}
 	ctx := outfmt.WithMode(ui.WithUI(context.Background(), u), outfmt.Mode{JSON: true})
+	var err error
 
 	exportCmd := AuthTokensExportCmd{
 		Email:     tok.Email,
 		Output:    OutputPathRequiredFlag{Path: outPath},
 		Overwrite: true,
 	}
-	if err := exportCmd.Run(ctx); err != nil {
+	err = exportCmd.Run(ctx)
+	if err != nil {
 		t.Fatalf("export: %v", err)
 	}
 
@@ -59,7 +61,8 @@ func TestAuthTokensExportImport_JSON(t *testing.T) {
 		t.Fatalf("read export: %v", err)
 	}
 	var payload map[string]any
-	if err := json.Unmarshal(data, &payload); err != nil {
+	err = json.Unmarshal(data, &payload)
+	if err != nil {
 		t.Fatalf("parse export: %v", err)
 	}
 	if payload["refresh_token"] != "rt" {
@@ -71,7 +74,8 @@ func TestAuthTokensExportImport_JSON(t *testing.T) {
 	openSecretsStore = func() (secrets.Store, error) { return newStore, nil }
 
 	importCmd := AuthTokensImportCmd{InPath: outPath}
-	if err := importCmd.Run(ctx); err != nil {
+	err = importCmd.Run(ctx)
+	if err != nil {
 		t.Fatalf("import: %v", err)
 	}
 	imported, err := newStore.GetToken(tok.Email)
@@ -101,16 +105,18 @@ func TestAuthList_CheckJSON(t *testing.T) {
 		t.Fatalf("SetToken: %v", err)
 	}
 
-	u, err := ui.New(ui.Options{Stdout: os.Stdout, Stderr: os.Stderr, Color: "never"})
-	if err != nil {
-		t.Fatalf("ui.New: %v", err)
+	u, uiErr := ui.New(ui.Options{Stdout: os.Stdout, Stderr: os.Stderr, Color: "never"})
+	if uiErr != nil {
+		t.Fatalf("ui.New: %v", uiErr)
 	}
 	ctx := outfmt.WithMode(ui.WithUI(context.Background(), u), outfmt.Mode{JSON: true})
+	var err error
 
 	listCmd := AuthListCmd{Check: true}
 	out := captureStdout(t, func() {
-		if err := listCmd.Run(ctx); err != nil {
-			t.Fatalf("list: %v", err)
+		runErr := listCmd.Run(ctx)
+		if runErr != nil {
+			t.Fatalf("list: %v", runErr)
 		}
 	})
 	var payload struct {
@@ -119,7 +125,8 @@ func TestAuthList_CheckJSON(t *testing.T) {
 			Valid *bool  `json:"valid"`
 		} `json:"accounts"`
 	}
-	if err := json.Unmarshal([]byte(out), &payload); err != nil {
+	err = json.Unmarshal([]byte(out), &payload)
+	if err != nil {
 		t.Fatalf("decode list output: %v", err)
 	}
 	if len(payload.Accounts) != 1 || payload.Accounts[0].Email != "a@b.com" || payload.Accounts[0].Valid == nil || !*payload.Accounts[0].Valid {

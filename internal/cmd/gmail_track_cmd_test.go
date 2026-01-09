@@ -12,6 +12,7 @@ import (
 )
 
 func setupTrackingEnv(t *testing.T) {
+	t.Helper()
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 	t.Setenv("XDG_CONFIG_HOME", filepath.Join(home, "xdg"))

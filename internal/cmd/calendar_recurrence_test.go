@@ -9,20 +9,20 @@ import (
 )
 
 func TestOriginalStartRange(t *testing.T) {
-	min, max, err := originalStartRange("2025-01-02T10:00:00Z")
+	minRange, maxRange, err := originalStartRange("2025-01-02T10:00:00Z")
 	if err != nil {
 		t.Fatalf("originalStartRange: %v", err)
 	}
-	if !strings.Contains(min, "2025-01-02") || !strings.Contains(max, "2025-01-02") {
-		t.Fatalf("unexpected range: %s %s", min, max)
+	if !strings.Contains(minRange, "2025-01-02") || !strings.Contains(maxRange, "2025-01-02") {
+		t.Fatalf("unexpected range: %s %s", minRange, maxRange)
 	}
 
-	min, max, err = originalStartRange("2025-01-02")
+	minRange, maxRange, err = originalStartRange("2025-01-02")
 	if err != nil {
 		t.Fatalf("originalStartRange date: %v", err)
 	}
-	if !strings.Contains(min, "2025-01-02") || !strings.Contains(max, "2025-01-03") {
-		t.Fatalf("unexpected date range: %s %s", min, max)
+	if !strings.Contains(minRange, "2025-01-02") || !strings.Contains(maxRange, "2025-01-03") {
+		t.Fatalf("unexpected date range: %s %s", minRange, maxRange)
 	}
 }
 

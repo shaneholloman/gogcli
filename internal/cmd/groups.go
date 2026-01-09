@@ -16,6 +16,12 @@ import (
 
 var newCloudIdentityService = googleapi.NewCloudIdentityGroups
 
+const (
+	groupRoleOwner   = "OWNER"
+	groupRoleManager = "MANAGER"
+	groupRoleMember  = "MEMBER"
+)
+
 type GroupsCmd struct {
 	List    GroupsListCmd    `cmd:"" name:"list" help:"List groups you belong to"`
 	Members GroupsMembersCmd `cmd:"" name:"members" help:"List members of a group"`
@@ -220,20 +226,20 @@ func lookupGroupByEmail(ctx context.Context, svc *cloudidentity.Service, email s
 // getMemberRole extracts the role from membership roles.
 func getMemberRole(roles []*cloudidentity.MembershipRole) string {
 	if len(roles) == 0 {
-		return "MEMBER"
+		return groupRoleMember
 	}
 	// Return the highest role (OWNER > MANAGER > MEMBER)
 	for _, r := range roles {
-		if r.Name == "OWNER" {
-			return "OWNER"
+		if r.Name == groupRoleOwner {
+			return groupRoleOwner
 		}
 	}
 	for _, r := range roles {
-		if r.Name == "MANAGER" {
-			return "MANAGER"
+		if r.Name == groupRoleManager {
+			return groupRoleManager
 		}
 	}
-	return "MEMBER"
+	return groupRoleMember
 }
 
 // truncate shortens a string to maxLen, adding "..." if truncated.

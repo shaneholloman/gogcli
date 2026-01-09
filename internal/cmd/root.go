@@ -17,6 +17,8 @@ import (
 	"github.com/steipete/gogcli/internal/ui"
 )
 
+const colorNever = "never"
+
 type RootFlags struct {
 	Color   string `help:"Color output: auto|always|never" default:"${color}"`
 	Account string `help:"Account email for API commands (gmail/calendar/drive/docs/slides/contacts/tasks/people/sheets)"`
@@ -114,7 +116,7 @@ func Execute(args []string) (err error) {
 
 	uiColor := cli.Color
 	if outfmt.IsJSON(ctx) || outfmt.IsPlain(ctx) {
-		uiColor = "never"
+		uiColor = colorNever
 	}
 
 	u, err := ui.New(ui.Options{

@@ -46,7 +46,8 @@ func TestResolveTrackingConfig(t *testing.T) {
 		TrackingKey: key,
 		AdminKey:    "admin",
 	}
-	if err := tracking.SaveConfig("a@b.com", cfg); err != nil {
+	err = tracking.SaveConfig("a@b.com", cfg)
+	if err != nil {
 		t.Fatalf("SaveConfig: %v", err)
 	}
 

@@ -16,6 +16,8 @@ type Options struct {
 	Color  string // auto|always|never
 }
 
+const colorNever = "never"
+
 type UI struct {
 	out *Printer
 	err *Printer
@@ -39,7 +41,7 @@ func New(opts Options) (*UI, error) {
 		colorMode = "auto"
 	}
 
-	if colorMode != "auto" && colorMode != "always" && colorMode != "never" {
+	if colorMode != "auto" && colorMode != "always" && colorMode != colorNever {
 		return nil, &ParseError{msg: "invalid --color (expected auto|always|never)"}
 	}
 
@@ -61,7 +63,7 @@ func chooseProfile(detected termenv.Profile, mode string) termenv.Profile {
 	}
 
 	switch mode {
-	case "never":
+	case colorNever:
 		return termenv.Ascii
 	case "always":
 		return termenv.TrueColor

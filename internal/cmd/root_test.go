@@ -97,8 +97,8 @@ func TestNewUsageError(t *testing.T) {
 	if wrapped == nil {
 		t.Fatalf("expected wrapped error")
 	}
-	exitErr, ok := wrapped.(*ExitError)
-	if !ok || exitErr.Code != 2 || exitErr.Err != err {
+	var exitErr *ExitError
+	if !errors.As(wrapped, &exitErr) || exitErr.Code != 2 || !errors.Is(exitErr.Err, err) {
 		t.Fatalf("unexpected wrapped error: %#v", wrapped)
 	}
 }

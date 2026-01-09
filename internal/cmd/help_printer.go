@@ -86,7 +86,7 @@ func helpColorMode(args []string) string {
 	for i := 0; i < len(args); i++ {
 		a := args[i]
 		if a == "--plain" || a == "--json" {
-			return "never"
+			return colorNever
 		}
 		if a == "--color" && i+1 < len(args) {
 			return strings.ToLower(strings.TrimSpace(args[i+1]))
@@ -107,7 +107,7 @@ func helpProfile(stdout io.Writer, mode string) termenv.Profile {
 		mode = "auto"
 	}
 	switch mode {
-	case "never":
+	case colorNever:
 		return termenv.Ascii
 	case "always":
 		return termenv.TrueColor
