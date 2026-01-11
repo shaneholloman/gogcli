@@ -8,6 +8,7 @@
 
 ### Fixed
 
+- Keep: use `keep.readonly` scope (service account). (#64) — thanks @jeremys.
 - Sheets: `gog auth add --services sheets --readonly` now includes Drive read-only scope so `gog sheets export` works. (#62)
 
 ### Tests

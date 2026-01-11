@@ -28,7 +28,12 @@ func NewKeepWithServiceAccount(ctx context.Context, serviceAccountPath, imperson
 		return nil, fmt.Errorf("read service account file: %w", err)
 	}
 
-	config, err := google.JWTConfigFromJSON(data, "https://www.googleapis.com/auth/keep")
+	scopes, err := googleauth.Scopes(googleauth.ServiceKeep)
+	if err != nil {
+		return nil, fmt.Errorf("keep scopes: %w", err)
+	}
+
+	config, err := google.JWTConfigFromJSON(data, scopes...)
 	if err != nil {
 		return nil, fmt.Errorf("parse service account: %w", err)
 	}

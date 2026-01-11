@@ -134,10 +134,10 @@ var serviceInfoByService = map[Service]serviceInfo{
 		note:   "Workspace only",
 	},
 	ServiceKeep: {
-		scopes: []string{"https://www.googleapis.com/auth/keep"},
+		scopes: []string{"https://www.googleapis.com/auth/keep.readonly"},
 		user:   false,
 		apis:   []string{"Keep API"},
-		note:   "Workspace only; service account",
+		note:   "Workspace only; service account (domain-wide delegation)",
 	},
 }
 

@@ -255,6 +255,28 @@ func TestScopesForManageWithOptions_Readonly(t *testing.T) {
 	}
 }
 
+func TestScopes_ServiceKeep_DefaultIsReadonly(t *testing.T) {
+	scopes, err := Scopes(ServiceKeep)
+	if err != nil {
+		t.Fatalf("Scopes: %v", err)
+	}
+
+	if len(scopes) != 1 || scopes[0] != "https://www.googleapis.com/auth/keep.readonly" {
+		t.Fatalf("unexpected keep scopes: %#v", scopes)
+	}
+}
+
+func TestScopesForServiceWithOptions_ServiceKeep_Readonly(t *testing.T) {
+	scopes, err := scopesForServiceWithOptions(ServiceKeep, ScopeOptions{Readonly: true})
+	if err != nil {
+		t.Fatalf("scopesForServiceWithOptions: %v", err)
+	}
+
+	if len(scopes) != 1 || scopes[0] != "https://www.googleapis.com/auth/keep.readonly" {
+		t.Fatalf("unexpected keep readonly scopes: %#v", scopes)
+	}
+}
+
 func TestScopesForManageWithOptions_DriveScopeFile(t *testing.T) {
 	scopes, err := ScopesForManageWithOptions([]Service{ServiceDrive, ServiceDocs}, ScopeOptions{
 		DriveScope: DriveScopeFile,
