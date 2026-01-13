@@ -175,6 +175,7 @@ Flag aliases:
 - `gog classroom courses unarchive <courseId>`
 - `gog classroom courses join <courseId> [--role student|teacher] [--user me]`
 - `gog classroom courses leave <courseId> [--role student|teacher] [--user me]`
+- `gog classroom courses url <courseId...>`
 - `gog classroom students <courseId> [--max N] [--page TOKEN]`
 - `gog classroom students get <courseId> <userId>`
 - `gog classroom students add <courseId> <userId> [--enrollment-code CODE]`
@@ -183,12 +184,18 @@ Flag aliases:
 - `gog classroom teachers get <courseId> <userId>`
 - `gog classroom teachers add <courseId> <userId>`
 - `gog classroom teachers remove <courseId> <userId>`
+- `gog classroom roster <courseId> [--students] [--teachers]`
 - `gog classroom coursework <courseId> [--state ...] [--max N] [--page TOKEN]`
 - `gog classroom coursework get <courseId> <courseworkId>`
 - `gog classroom coursework create <courseId> --title TITLE [--type ASSIGNMENT|...]`
 - `gog classroom coursework update <courseId> <courseworkId> [--title ...]`
 - `gog classroom coursework delete <courseId> <courseworkId>`
 - `gog classroom coursework assignees <courseId> <courseworkId> [--mode ...] [--add-student ...]`
+- `gog classroom materials <courseId> [--state ...] [--max N] [--page TOKEN]`
+- `gog classroom materials get <courseId> <materialId>`
+- `gog classroom materials create <courseId> --title TITLE`
+- `gog classroom materials update <courseId> <materialId> [--title ...]`
+- `gog classroom materials delete <courseId> <materialId>`
 - `gog classroom submissions <courseId> <courseworkId> [--state ...] [--max N] [--page TOKEN]`
 - `gog classroom submissions get <courseId> <courseworkId> <submissionId>`
 - `gog classroom submissions turn-in <courseId> <courseworkId> <submissionId>`
