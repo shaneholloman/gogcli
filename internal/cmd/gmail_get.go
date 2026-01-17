@@ -23,15 +23,6 @@ const (
 	gmailFormatRaw      = "raw"
 )
 
-// attachmentOutput is used for JSON output with camelCase field names
-type attachmentOutput struct {
-	Filename     string `json:"filename"`
-	Size         int64  `json:"size"`
-	SizeHuman    string `json:"sizeHuman"`
-	MimeType     string `json:"mimeType"`
-	AttachmentID string `json:"attachmentId"`
-}
-
 func (c *GmailGetCmd) Run(ctx context.Context, flags *RootFlags) error {
 	u := ui.FromContext(ctx)
 	account, err := requireAccount(flags)
@@ -102,17 +93,7 @@ func (c *GmailGetCmd) Run(ctx context.Context, flags *RootFlags) error {
 		if format == gmailFormatFull || format == gmailFormatMetadata {
 			attachments := collectAttachments(msg.Payload)
 			if len(attachments) > 0 {
-				out := make([]attachmentOutput, len(attachments))
-				for i, a := range attachments {
-					out[i] = attachmentOutput{
-						Filename:     a.Filename,
-						Size:         a.Size,
-						SizeHuman:    formatBytes(a.Size),
-						MimeType:     a.MimeType,
-						AttachmentID: a.AttachmentID,
-					}
-				}
-				payload["attachments"] = out
+				payload["attachments"] = attachmentOutputs(attachments)
 			}
 		}
 		return outfmt.WriteJSON(os.Stdout, payload)
@@ -143,11 +124,11 @@ func (c *GmailGetCmd) Run(ctx context.Context, flags *RootFlags) error {
 		if unsubscribe != "" {
 			u.Out().Printf("unsubscribe\t%s", unsubscribe)
 		}
-		attachments := collectAttachments(msg.Payload)
+		attachments := attachmentOutputs(collectAttachments(msg.Payload))
 		if len(attachments) > 0 {
 			u.Out().Println("")
 			for _, a := range attachments {
-				u.Out().Printf("attachment\t%s\t%s\t%s\t%s", a.Filename, formatBytes(a.Size), a.MimeType, a.AttachmentID)
+				u.Out().Println(attachmentLine(a))
 			}
 		}
 		if format == gmailFormatFull {

@@ -66,6 +66,19 @@ func TestCollectAttachments_More(t *testing.T) {
 	}
 }
 
+func TestAttachmentLine(t *testing.T) {
+	att := attachmentOutput{
+		Filename:     "file.txt",
+		Size:         12,
+		SizeHuman:    formatBytes(12),
+		MimeType:     "text/plain",
+		AttachmentID: "a1",
+	}
+	if got := attachmentLine(att); got != "attachment\tfile.txt\t12 B\ttext/plain\ta1" {
+		t.Fatalf("unexpected attachment line: %q", got)
+	}
+}
+
 func TestBestBodySelection(t *testing.T) {
 	plain := base64.RawURLEncoding.EncodeToString([]byte("plain"))
 	html := base64.RawURLEncoding.EncodeToString([]byte("<b>html</b>"))

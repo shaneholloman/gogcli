@@ -166,6 +166,9 @@ func TestGmailDraftsGetCmd_Text(t *testing.T) {
 	if !strings.Contains(out, "Attachments:") || !strings.Contains(out, "file.txt") {
 		t.Fatalf("expected attachment output: %q", out)
 	}
+	if !strings.Contains(out, "attachment\tfile.txt\t10 B\ttext/plain\tatt1") {
+		t.Fatalf("expected attachment line output: %q", out)
+	}
 }
 
 func TestGmailDraftsDeleteCmd_JSON(t *testing.T) {

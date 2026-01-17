@@ -169,8 +169,8 @@ func (c *GmailDraftsGetCmd) Run(ctx context.Context, flags *RootFlags) error {
 	attachments := collectAttachments(msg.Payload)
 	if len(attachments) > 0 {
 		u.Out().Println("Attachments:")
-		for _, a := range attachments {
-			u.Out().Printf("  - %s (%d bytes)", a.Filename, a.Size)
+		for _, a := range attachmentOutputs(attachments) {
+			u.Out().Println(attachmentLine(a))
 		}
 		u.Out().Println("")
 	}

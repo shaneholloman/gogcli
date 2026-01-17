@@ -170,8 +170,8 @@ func (c *GmailThreadGetCmd) Run(ctx context.Context, flags *RootFlags) error {
 		attachments := collectAttachments(msg.Payload)
 		if len(attachments) > 0 {
 			u.Out().Println("Attachments:")
-			for _, a := range attachments {
-				u.Out().Printf("  - %s (%d bytes)", a.Filename, a.Size)
+			for _, a := range attachmentOutputs(attachments) {
+				u.Out().Println(attachmentLine(a))
 			}
 			u.Out().Println("")
 		}
@@ -305,30 +305,22 @@ func (c *GmailThreadAttachmentsCmd) Run(ctx context.Context, flags *RootFlags) e
 		}
 	}
 
-	type attachmentOutput struct {
-		MessageID    string `json:"messageId"`
-		AttachmentID string `json:"attachmentId"`
-		Filename     string `json:"filename"`
-		Size         int64  `json:"size"`
-		SizeHuman    string `json:"sizeHuman"`
-		MimeType     string `json:"mimeType"`
-		Path         string `json:"path,omitempty"`
-		Cached       bool   `json:"cached,omitempty"`
+	type attachmentDownloadOutput struct {
+		MessageID string `json:"messageId"`
+		attachmentOutput
+		Path   string `json:"path,omitempty"`
+		Cached bool   `json:"cached,omitempty"`
 	}
 
-	var allAttachments []attachmentOutput
+	var allAttachments []attachmentDownloadOutput
 	for _, msg := range thread.Messages {
 		if msg == nil {
 			continue
 		}
 		for _, a := range collectAttachments(msg.Payload) {
-			att := attachmentOutput{
-				MessageID:    msg.Id,
-				AttachmentID: a.AttachmentID,
-				Filename:     a.Filename,
-				Size:         a.Size,
-				SizeHuman:    formatBytes(a.Size),
-				MimeType:     a.MimeType,
+			att := attachmentDownloadOutput{
+				MessageID:        msg.Id,
+				attachmentOutput: attachmentOutputFromInfo(a),
 			}
 			if c.Download {
 				outPath, cached, err := downloadAttachment(ctx, svc, msg.Id, a, attachDir)
@@ -363,29 +355,10 @@ func (c *GmailThreadAttachmentsCmd) Run(ctx context.Context, flags *RootFlags) e
 			}
 			u.Out().Printf("  %s: %s (%s) - %s", status, a.Filename, a.SizeHuman, a.Path)
 		} else {
-			u.Out().Printf("  - %s (%s) [%s]", a.Filename, a.SizeHuman, a.MimeType)
+			u.Out().Println(attachmentLine(a.attachmentOutput))
 		}
 	}
 	return nil
-}
-
-// formatBytes formats bytes into human-readable format.
-func formatBytes(bytes int64) string {
-	const (
-		KB = 1024
-		MB = KB * 1024
-		GB = MB * 1024
-	)
-	switch {
-	case bytes >= GB:
-		return fmt.Sprintf("%.1f GB", float64(bytes)/float64(GB))
-	case bytes >= MB:
-		return fmt.Sprintf("%.1f MB", float64(bytes)/float64(MB))
-	case bytes >= KB:
-		return fmt.Sprintf("%.1f KB", float64(bytes)/float64(KB))
-	default:
-		return fmt.Sprintf("%d B", bytes)
-	}
 }
 
 type GmailURLCmd struct {
@@ -413,36 +386,6 @@ func (c *GmailURLCmd) Run(ctx context.Context, flags *RootFlags) error {
 		u.Out().Printf("%s\t%s", id, threadURL)
 	}
 	return nil
-}
-
-type attachmentInfo struct {
-	Filename     string
-	Size         int64
-	MimeType     string
-	AttachmentID string
-}
-
-func collectAttachments(p *gmail.MessagePart) []attachmentInfo {
-	if p == nil {
-		return nil
-	}
-	var out []attachmentInfo
-	if p.Body != nil && p.Body.AttachmentId != "" {
-		filename := p.Filename
-		if strings.TrimSpace(filename) == "" {
-			filename = "attachment"
-		}
-		out = append(out, attachmentInfo{
-			Filename:     filename,
-			Size:         p.Body.Size,
-			MimeType:     p.MimeType,
-			AttachmentID: p.Body.AttachmentId,
-		})
-	}
-	for _, part := range p.Parts {
-		out = append(out, collectAttachments(part)...)
-	}
-	return out
 }
 
 func bestBodyText(p *gmail.MessagePart) string {
