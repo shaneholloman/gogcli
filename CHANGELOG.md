@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1 - 2026-01-21
+
+### Fixed
+
+- Auth: fix Gmail search example in auth success template. (#89) — thanks @rvben.
+
 ## 0.8.0 - 2026-01-19
 
 ### Added
